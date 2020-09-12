@@ -1,0 +1,171 @@
+<html>
+    <head>
+    <link rel="stylesheet" href="style.css">
+    </head>
+<body>
+    <div id="div1" style="width: 150px;"></div>
+
+<!--import {crearGrilla, avoidDefault2, changeColor} from "./div-test-button.js"
+
+class Casilla{
+  constructor(id, ingreso){
+    this.bomba=false;
+    this.flagged=false;
+    this.bombsAround=0;
+    this.isBlank=false;
+    this.id=convertirIdACoordenadas(id, ingreso);
+  }
+}
+
+
+
+function crearMyArray(ingreso){
+    let arrayLocal=[];
+    let arrayGlobal=[];
+for(let i=0;i<=(numeroElegido*numeroElegido);i++){
+  let casilla=new Casilla;
+  casilla.id=i;
+  if(arrayLocal.length===ingreso){
+      arrayGlobal.push(arrayLocal);
+      i--;
+      arrayLocal=[];
+  }
+  else{
+      arrayLocal.push(casilla);
+  }
+}
+return arrayGlobal;
+}
+
+
+function crearBomba(ingresoUsuario){//genera array con porcentaje de bombas relacionado
+    let cantidadBombas=Math.floor((Math.pow(ingresoUsuario, 2)*16)/100);// con el tamaño matriz
+    let arrayBombas=[];//16 es porcentaje
+    let bombaActual;
+    for(let i=0; i<cantidadBombas; i++){
+        bombaActual=Math.floor(Math.random()*Math.pow(ingresoUsuario, 2));//numero aleatorio
+        if(arrayBombas.includes(bombaActual)){//con coordenada en base a ingresousuario
+            i--;
+            continue;
+        }
+        arrayBombas.push(convertirIdACoordenadas(bombaActual, ingresoUsuario))//array de arrays
+    }
+    //console.log(arrayBombas)
+    colocarBomba(arrayBombas)
+}
+
+function convertirIdACoordenadas(Id, ingresoUsuario){
+    let fila=Math.floor(Id/ingresoUsuario);
+    let columna=Id%ingresoUsuario;
+    return [fila, columna];
+}
+
+function colocarBomba(array){//toma los array incluidos en array crearBomba y los coloca en myarray 
+    array.forEach(element=>{
+        //console.log(element)
+        (myArray[element[0]][element[1]]).bomba=true
+    })
+}
+
+function chequearCasillasValidas(IdCasilla, ingreso){
+    /*let coordFila=IdCasilla[0]
+    let coordColumna=IdCasilla[1]*//*
+    let coordFila=convertirIdACoordenadas(IdCasilla, ingreso)[0];
+    let coordColumna=convertirIdACoordenadas(IdCasilla, ingreso)[1];
+    let arrayCasillasAdycentes=[[coordFila-1, coordColumna-1], [coordFila-1, coordColumna], 
+    [coordFila-1, coordColumna+1], [coordFila, coordColumna-1], [coordFila, coordColumna+1],
+    [coordFila+1, coordColumna-1], [coordFila+1, coordColumna], [coordFila+1, coordColumna+1]];
+    let arrayCasillasValidas=[]; 
+   
+    arrayCasillasAdycentes.forEach(element=>{
+        if(((element[0]>(-1)&&element[0]<ingreso)&&(element[1]!==(-1)&&element[1]<ingreso))&&!(arrayCasillasValidas.includes(element))){
+                arrayCasillasValidas.push(element)
+        }
+    })
+    
+    return arrayCasillasValidas;
+}
+
+function contarBombas(coord, ingreso){//chequea si hay bomba en la casilla actual, sino hay cuenta bombas
+    //console.log(myArray[coord[0]][coord[1]])
+    if((myArray[coord[0]][coord[1]]).bomba===true){//en casillas adyacentes
+        return true
+    }
+    else{
+        let joined=coord[0]*ingreso+coord[1]
+        let arrayCasillasValidas=chequearCasillasValidas(joined, ingreso);
+        /*let arrayUnido=[]
+        arrayCasillasValidas.forEach(element=>{
+          arrayUnido.push(element.join(''))
+          
+        })*//*
+        let contador=0;
+        arrayCasillasValidas.forEach(element=>{
+          //element=parseInt(element)
+            if(myArray[element[0]][element[1]].bomba===true){
+                //console.log(myArray[element[0]][element[1]])
+                contador++
+            }
+        })
+        //console.log(arrayUnido)
+        return contador;
+    }
+}
+
+function chequearTodasLasCasillas(ingreso){
+    for(let i=0; i<(myArray.length*myArray.length);i++){
+        let coordenada=convertirIdACoordenadas(i, ingreso)
+      if(myArray[coordenada[0]][coordenada[1]].bomba===true){
+          myArray[coordenada[0]][coordenada[1]].isBlank=false;
+        continue
+      }
+      else if(contarBombas(coordenada, ingreso)===0){
+        myArray[coordenada[0]][coordenada[1]].isBlank=true//la funcion esta siendo chequeada 2 veces ¡¡¡SOLUCIONAR!!!
+      }
+      else{
+        myArray[coordenada[0]][coordenada[1]].bombsAround=contarBombas(coordenada, ingreso)
+      }
+    }
+}
+
+function chequearCasillasVacias(Id, ingreso){
+    let coordenada=convertirIdACoordenadas(id, ingreso)
+    if((myArray[coordenada[0]][coordenada[1]]).isBlank===true){
+        //let identificador=Id.join('')
+        document.getElementById(`${Id}`).setAttribute('style', 'color: white;')
+        let array=chequearCasillasValidas(Id, ingreso)
+        array.forEach(element=>{
+            let joined=parseInt(element.join())
+            chequearCasillasVacias(joined, ingreso)
+        })
+    }else if(myArray[coordenada[0]][coordenada[1]].bomba===true){
+        alert('game over')    
+    }
+    else{
+        document.getElementById(`${Id}`).textContent=`${myArray[coordenada[0]][coordenada[1]].bombsAround}`
+    }
+}
+
+function ingresarNumero() {
+    let num;
+    do{
+        num=prompt("ingrese")
+    }while((num<10 || num>30)&&num)
+    return parseInt(num)
+}
+
+let myArray=[]
+
+let numeroElegido;
+numeroElegido=ingresarNumero();
+
+myArray = crearMyArray(numeroElegido);
+
+crearBomba(numeroElegido);
+chequearTodasLasCasillas(numeroElegido)*/-->
+
+
+
+</body>
+</html>
+<script src="script.js"></script></script>
