@@ -145,7 +145,8 @@ class Casilla{
             }
       }else if(myArray[coordenada[0]][coordenada[1]].bomba===true){
         document.getElementById(`${Id}`).setAttribute('style', 'background-color: black;')
-          alert('La cagaste')    
+          alert('La cagaste') 
+          location.reload();   
       }
       else{
           document.getElementById(`${Id}`).textContent=`${myArray[coordenada[0]][coordenada[1]].bombsAround}`
